@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecoverAI Recovery Report</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1f2937;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 32px 16px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    header {
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 16px;
+      margin-bottom: 28px;
+    }
+    h1 {
+      margin: 0;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .subtitle {
+      color: #6b7280;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    h2 {
+      font-size: 18px;
+      color: #1f2937;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      border-left: 4px solid #3b82f6;
+      padding-left: 10px;
+    }
+    .grid-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .card-label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .card-val {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 6px;
+    }
+    .card-sub {
+      font-size: 12px;
+      color: #10b981;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      background-color: #f8fafc;
+      color: #475569;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-green {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .badge-amber {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .badge-blue {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>RecoverAI Recovery Report</h1>
+      <div class="subtitle">Generated on August 31, 2026 | Autonomous Subscription Revenue Recovery</div>
+    </header>
+
+    <!-- Section 1: Top Metrics -->
+    <h2>Summary Metrics</h2>
+    <div class="grid-metrics">
+      <div class="card">
+        <div class="card-label">Recovery Rate</div>
+        <div class="card-val">28.0%</div>
+        <div class="card-sub">+-6.0% vs Baseline</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Revenue Recovered</div>
+        <div class="card-val">₹64,972</div>
+        <div class="card-sub">₹-19,494 Incremental</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Recovery Lift</div>
+        <div class="card-val">+-6 Subs</div>
+        <div class="card-sub">Baseline: 34</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Actions Avoided</div>
+        <div class="card-val">152</div>
+        <div class="card-sub">46 total wasted</div>
+      </div>
+    </div>
+
+    <!-- Section 2: By Failure Code -->
+    <h2>Recovery by Failure Code</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Failure Code</th>
+          <th>Total Cases</th>
+          <th>RecoverAI Recovered</th>
+          <th>Recovery Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>INSUFFICIENT_FUNDS</strong></td>
+          <td>41</td>
+          <td>11</td>
+          <td><span class="badge badge-blue">27.0%</span></td>
+        </tr>
+        
+        <tr>
+          <td><strong>MANDATE_REVOKED</strong></td>
+          <td>18</td>
+          <td>1</td>
+          <td><span class="badge badge-blue">6.0%</span></td>
+        </tr>
+        
+        <tr>
+          <td><strong>CARD_EXPIRED</strong></td>
+          <td>26</td>
+          <td>10</td>
+          <td><span class="badge badge-blue">38.0%</span></td>
+        </tr>
+        
+        <tr>
+          <td><strong>NETWORK_ERROR</strong></td>
+          <td>9</td>
+          <td>3</td>
+          <td><span class="badge badge-blue">33.0%</span></td>
+        </tr>
+        
+        <tr>
+          <td><strong>UPI_TIMEOUT</strong></td>
+          <td>6</td>
+          <td>3</td>
+          <td><span class="badge badge-blue">50.0%</span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+
+    <!-- Section 3: Top RECOVERAI_WON Cases -->
+    <h2>Top 5 RecoverAI Recovery Wins</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Subscription ID</th>
+          <th>Amount</th>
+          <th>Agent Action</th>
+          <th>Rationale</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><code>sub_063</code></td>
+          <td><strong>₹4999</strong></td>
+          <td><span class="badge badge-green">PAYMENT_LINK</span></td>
+          <td>Intelligent PAYMENT_LINK tailored for CARD_EXPIRED</td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_084</code></td>
+          <td><strong>₹4999</strong></td>
+          <td><span class="badge badge-green">PAYDAY_RETRY</span></td>
+          <td>Intelligent PAYDAY_RETRY tailored for INSUFFICIENT_FUNDS</td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_088</code></td>
+          <td><strong>₹4999</strong></td>
+          <td><span class="badge badge-green">PAYDAY_RETRY</span></td>
+          <td>Intelligent PAYDAY_RETRY tailored for INSUFFICIENT_FUNDS</td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_097</code></td>
+          <td><strong>₹4999</strong></td>
+          <td><span class="badge badge-green">PAYMENT_LINK</span></td>
+          <td>Intelligent PAYMENT_LINK tailored for CARD_EXPIRED</td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_008</code></td>
+          <td><strong>₹1999</strong></td>
+          <td><span class="badge badge-green">PAYMENT_LINK</span></td>
+          <td>Intelligent PAYMENT_LINK tailored for CARD_EXPIRED</td>
+        </tr>
+        
+      </tbody>
+    </table>
+
+    <!-- Section 4: Escalated Cases -->
+    <h2>Cases Escalated for Merchant Review (17)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Subscription ID</th>
+          <th>Amount</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><code>sub_003</code></td>
+          <td>₹1999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_005</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">High-value amount (Rs.4999) with no established relationship (tier=at_risk, tenure=2mo). Escalating to merchant for review.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_011</code></td>
+          <td>₹1999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_018</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_019</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">High-value amount (Rs.4999) with no established relationship (tier=first_time, tenure=1mo). Escalating to merchant for review.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_021</code></td>
+          <td>₹1999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_026</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">High-value amount (Rs.4999) with no established relationship (tier=first_time, tenure=0mo). Escalating to merchant for review.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_028</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_032</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_041</code></td>
+          <td>₹499</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_054</code></td>
+          <td>₹1999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_064</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_065</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_066</code></td>
+          <td>₹1999</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_067</code></td>
+          <td>₹499</td>
+          <td><span class="badge badge-amber">Mandate revoked with prior attempt -- customer intent signal. Escalating to merchant.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_068</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">High-value amount (Rs.4999) with no established relationship (tier=first_time, tenure=1mo). Escalating to merchant for review.</span></td>
+        </tr>
+        
+        <tr>
+          <td><code>sub_073</code></td>
+          <td>₹4999</td>
+          <td><span class="badge badge-amber">High-value amount (Rs.4999) with no established relationship (tier=at_risk, tenure=2mo). Escalating to merchant for review.</span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+
+    <footer>
+      Generated by RecoverAI &bull; Track 03: AI Revenue Recovery &bull; Razorpay AI Buildathon 2026
+    </footer>
+  </div>
+</body>
+</html>

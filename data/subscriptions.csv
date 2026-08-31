@@ -1,0 +1,101 @@
+subscription_id,customer_id,plan_name,amount,failure_code,attempt_count,days_since_failure,tier,tenure_months,lifetime_success_rate,billing_day,usual_payment_day,previous_failures,previous_recovery_days,preferred_channel
+sub_001,cust_001,Business,4999,INSUFFICIENT_FUNDS,2,1,at_risk,2,0.55,5,2,1,[5],netbanking
+sub_002,cust_002,Pro,1999,INSUFFICIENT_FUNDS,1,1,regular,20,0.82,20,22,0,[],upi
+sub_003,cust_003,Pro,1999,MANDATE_REVOKED,1,0,high_value,14,0.81,5,5,0,[],card
+sub_004,cust_004,Starter,499,CARD_EXPIRED,1,2,regular,17,0.88,20,20,0,[],upi
+sub_005,cust_005,Business,4999,INSUFFICIENT_FUNDS,0,6,at_risk,2,0.22,10,12,2,"[1, 2]",upi
+sub_006,cust_006,Starter,499,CARD_EXPIRED,1,6,regular,14,0.82,10,9,2,"[1, 5]",card
+sub_007,cust_007,Business,4999,INSUFFICIENT_FUNDS,0,1,at_risk,4,0.56,15,16,1,[1],card
+sub_008,cust_008,Pro,1999,CARD_EXPIRED,1,4,regular,23,0.87,25,25,0,[],upi
+sub_009,cust_009,Pro,1999,INSUFFICIENT_FUNDS,1,4,at_risk,7,0.67,10,13,2,"[2, 2]",netbanking
+sub_010,cust_010,Business,4999,CARD_EXPIRED,1,6,high_value,11,0.93,1,2,2,"[1, 4]",netbanking
+sub_011,cust_011,Pro,1999,MANDATE_REVOKED,1,2,regular,6,0.91,20,18,2,"[3, 1]",netbanking
+sub_012,cust_012,Pro,1999,CARD_EXPIRED,0,5,regular,8,0.88,25,25,2,"[3, 5]",netbanking
+sub_013,cust_013,Business,4999,INSUFFICIENT_FUNDS,0,1,regular,22,0.84,20,22,0,[],upi
+sub_014,cust_014,Pro,1999,NETWORK_ERROR,0,2,high_value,34,0.89,5,1,0,[],upi
+sub_015,cust_015,Business,4999,CARD_EXPIRED,0,6,regular,24,0.87,20,19,1,[5],upi
+sub_016,cust_016,Business,4999,CARD_EXPIRED,1,4,regular,12,0.86,25,28,1,[5],upi
+sub_017,cust_017,Pro,1999,INSUFFICIENT_FUNDS,0,2,regular,10,0.89,1,7,0,[],netbanking
+sub_018,cust_018,Business,4999,MANDATE_REVOKED,1,0,regular,10,0.83,10,8,0,[],netbanking
+sub_019,cust_019,Business,4999,INSUFFICIENT_FUNDS,0,4,first_time,1,,20,21,0,[],upi
+sub_020,cust_020,Pro,1999,INSUFFICIENT_FUNDS,0,3,regular,17,0.94,10,11,2,"[1, 1]",card
+sub_021,cust_021,Pro,1999,MANDATE_REVOKED,1,0,high_value,23,0.87,5,2,0,[],upi
+sub_022,cust_022,Pro,1999,CARD_EXPIRED,0,0,high_value,7,0.9,15,17,0,[],upi
+sub_023,cust_023,Starter,499,INSUFFICIENT_FUNDS,1,1,regular,15,0.78,15,13,1,[4],upi
+sub_024,cust_024,Pro,1999,CARD_EXPIRED,0,6,first_time,1,,20,23,0,[],netbanking
+sub_025,cust_025,Starter,499,INSUFFICIENT_FUNDS,0,0,regular,4,0.92,20,23,0,[],netbanking
+sub_026,cust_026,Business,4999,CARD_EXPIRED,0,4,first_time,0,,5,1,0,[],netbanking
+sub_027,cust_027,Starter,499,INSUFFICIENT_FUNDS,0,6,regular,21,0.83,5,5,2,"[1, 4]",upi
+sub_028,cust_028,Business,4999,MANDATE_REVOKED,1,2,regular,11,0.86,5,3,1,[3],upi
+sub_029,cust_029,Starter,499,INSUFFICIENT_FUNDS,0,4,at_risk,4,0.46,1,1,2,"[1, 2]",netbanking
+sub_030,cust_030,Pro,1999,INSUFFICIENT_FUNDS,1,4,regular,23,0.88,25,25,2,"[1, 2]",netbanking
+sub_031,cust_031,Pro,1999,INSUFFICIENT_FUNDS,1,4,regular,22,0.82,5,3,0,[],card
+sub_032,cust_032,Business,4999,MANDATE_REVOKED,1,3,regular,23,0.86,10,8,0,[],upi
+sub_033,cust_033,Starter,499,INSUFFICIENT_FUNDS,0,2,regular,16,0.89,5,5,0,[],netbanking
+sub_034,cust_034,Business,4999,UPI_TIMEOUT,0,6,regular,7,0.86,10,12,1,[3],netbanking
+sub_035,cust_035,Starter,499,NETWORK_ERROR,1,1,regular,20,0.95,25,23,2,"[2, 2]",card
+sub_036,cust_036,Starter,499,UPI_TIMEOUT,1,3,high_value,35,0.84,1,2,2,"[2, 3]",netbanking
+sub_037,cust_037,Starter,499,NETWORK_ERROR,1,6,regular,9,0.94,1,5,1,[3],upi
+sub_038,cust_038,Starter,499,INSUFFICIENT_FUNDS,2,3,at_risk,5,0.38,10,10,2,"[5, 3]",upi
+sub_039,cust_039,Starter,499,INSUFFICIENT_FUNDS,0,1,first_time,0,,20,20,0,[],upi
+sub_040,cust_040,Business,4999,CARD_EXPIRED,2,2,at_risk,2,0.4,15,17,1,[3],netbanking
+sub_041,cust_041,Starter,499,MANDATE_REVOKED,1,6,regular,24,0.82,20,23,0,[],netbanking
+sub_042,cust_042,Business,4999,UPI_TIMEOUT,1,5,at_risk,5,0.55,1,3,2,"[3, 5]",netbanking
+sub_043,cust_043,Starter,499,INSUFFICIENT_FUNDS,0,3,at_risk,5,0.41,25,28,2,"[3, 2]",upi
+sub_044,cust_044,Pro,1999,NETWORK_ERROR,2,2,at_risk,4,0.47,15,16,1,[1],card
+sub_045,cust_045,Pro,1999,CARD_EXPIRED,0,2,at_risk,5,0.32,1,2,1,[1],netbanking
+sub_046,cust_046,Starter,499,INSUFFICIENT_FUNDS,1,6,regular,23,0.89,1,5,1,[4],card
+sub_047,cust_047,Starter,499,INSUFFICIENT_FUNDS,2,6,at_risk,3,0.62,1,5,3,"[4, 1, 5]",upi
+sub_048,cust_048,Starter,499,UPI_TIMEOUT,1,1,regular,20,0.89,15,18,2,"[5, 4]",netbanking
+sub_049,cust_049,Business,4999,CARD_EXPIRED,1,6,regular,10,0.94,15,16,2,"[4, 2]",card
+sub_050,cust_050,Pro,1999,CARD_EXPIRED,0,1,at_risk,2,0.27,10,10,2,"[2, 2]",card
+sub_051,cust_051,Starter,499,CARD_EXPIRED,0,3,regular,16,0.85,15,13,2,"[4, 4]",upi
+sub_052,cust_052,Starter,499,UPI_TIMEOUT,0,3,regular,20,0.93,15,17,1,[2],netbanking
+sub_053,cust_053,Pro,1999,CARD_EXPIRED,0,2,regular,8,0.94,25,28,2,"[5, 1]",card
+sub_054,cust_054,Pro,1999,MANDATE_REVOKED,1,0,at_risk,8,0.29,25,26,2,"[3, 2]",upi
+sub_055,cust_055,Pro,1999,INSUFFICIENT_FUNDS,0,3,high_value,32,0.8,10,11,2,"[5, 1]",card
+sub_056,cust_056,Pro,1999,INSUFFICIENT_FUNDS,0,5,regular,9,0.94,1,1,0,[],upi
+sub_057,cust_057,Starter,499,CARD_EXPIRED,0,1,regular,14,0.81,15,18,0,[],card
+sub_058,cust_058,Pro,1999,INSUFFICIENT_FUNDS,0,2,regular,15,0.96,20,23,0,[],card
+sub_059,cust_059,Business,4999,MANDATE_REVOKED,2,0,at_risk,2,0.61,25,25,1,[3],netbanking
+sub_060,cust_060,Business,4999,CARD_EXPIRED,0,4,regular,16,0.94,25,25,1,[3],upi
+sub_061,cust_061,Business,4999,NETWORK_ERROR,1,1,regular,19,0.96,15,14,2,"[5, 4]",netbanking
+sub_062,cust_062,Pro,1999,CARD_EXPIRED,0,2,at_risk,5,0.66,10,9,2,"[5, 5]",upi
+sub_063,cust_063,Business,4999,CARD_EXPIRED,1,6,regular,9,0.85,10,9,1,[3],card
+sub_064,cust_064,Business,4999,MANDATE_REVOKED,1,0,regular,10,0.92,20,19,2,"[2, 4]",upi
+sub_065,cust_065,Business,4999,MANDATE_REVOKED,1,0,regular,15,0.91,1,3,2,"[5, 3]",upi
+sub_066,cust_066,Pro,1999,MANDATE_REVOKED,1,5,regular,17,0.83,20,20,0,[],card
+sub_067,cust_067,Starter,499,MANDATE_REVOKED,1,5,regular,9,0.82,20,23,1,[5],upi
+sub_068,cust_068,Business,4999,MANDATE_REVOKED,0,6,first_time,1,,5,3,0,[],upi
+sub_069,cust_069,Starter,499,INSUFFICIENT_FUNDS,0,1,at_risk,5,0.56,10,8,3,"[4, 1, 1]",upi
+sub_070,cust_070,Business,4999,INSUFFICIENT_FUNDS,0,2,regular,18,0.8,5,1,1,[4],card
+sub_071,cust_071,Starter,499,MANDATE_REVOKED,0,1,at_risk,2,0.72,5,7,3,"[4, 5, 5]",card
+sub_072,cust_072,Business,4999,INSUFFICIENT_FUNDS,0,3,regular,16,0.84,15,15,2,"[1, 2]",netbanking
+sub_073,cust_073,Business,4999,INSUFFICIENT_FUNDS,1,1,at_risk,2,0.28,5,2,2,"[5, 4]",netbanking
+sub_074,cust_074,Pro,1999,INSUFFICIENT_FUNDS,1,2,regular,24,0.82,25,26,2,"[5, 2]",upi
+sub_075,cust_075,Pro,1999,INSUFFICIENT_FUNDS,1,1,regular,4,0.81,10,9,2,"[5, 3]",upi
+sub_076,cust_076,Pro,1999,INSUFFICIENT_FUNDS,2,5,at_risk,8,0.43,15,15,1,[4],netbanking
+sub_077,cust_077,Business,4999,INSUFFICIENT_FUNDS,1,0,regular,3,0.97,5,7,2,"[1, 2]",netbanking
+sub_078,cust_078,Pro,1999,CARD_EXPIRED,0,2,regular,23,0.93,5,7,1,[3],card
+sub_079,cust_079,Pro,1999,INSUFFICIENT_FUNDS,1,6,at_risk,8,0.35,5,3,3,"[1, 4, 1]",card
+sub_080,cust_080,Pro,1999,INSUFFICIENT_FUNDS,1,6,regular,24,0.95,15,17,1,[1],upi
+sub_081,cust_081,Starter,499,CARD_EXPIRED,0,3,at_risk,4,0.34,25,26,2,"[4, 4]",upi
+sub_082,cust_082,Starter,499,INSUFFICIENT_FUNDS,0,6,at_risk,1,0.49,5,2,1,[1],card
+sub_083,cust_083,Pro,1999,UPI_TIMEOUT,1,1,at_risk,5,0.42,15,18,2,"[2, 4]",card
+sub_084,cust_084,Business,4999,INSUFFICIENT_FUNDS,1,4,regular,5,0.83,20,23,1,[5],upi
+sub_085,cust_085,Pro,1999,NETWORK_ERROR,1,2,regular,18,0.94,20,22,2,"[4, 3]",netbanking
+sub_086,cust_086,Pro,1999,MANDATE_REVOKED,0,3,regular,10,0.89,10,9,1,[1],netbanking
+sub_087,cust_087,Pro,1999,MANDATE_REVOKED,0,6,at_risk,3,0.46,15,16,1,[5],netbanking
+sub_088,cust_088,Business,4999,INSUFFICIENT_FUNDS,0,6,regular,17,0.78,15,13,1,[2],netbanking
+sub_089,cust_089,Starter,499,CARD_EXPIRED,0,2,first_time,2,,20,23,0,[],card
+sub_090,cust_090,Starter,499,NETWORK_ERROR,1,6,high_value,26,0.92,20,21,2,"[1, 5]",card
+sub_091,cust_091,Starter,499,INSUFFICIENT_FUNDS,2,2,at_risk,2,0.6,5,1,1,[4],card
+sub_092,cust_092,Starter,499,MANDATE_REVOKED,0,0,first_time,1,,10,8,0,[],card
+sub_093,cust_093,Pro,1999,CARD_EXPIRED,1,3,regular,8,0.81,20,23,2,"[2, 4]",upi
+sub_094,cust_094,Business,4999,INSUFFICIENT_FUNDS,1,2,regular,3,0.95,15,15,1,[5],netbanking
+sub_095,cust_095,Starter,499,INSUFFICIENT_FUNDS,0,4,first_time,2,,10,13,0,[],card
+sub_096,cust_096,Pro,1999,CARD_EXPIRED,1,3,regular,15,0.89,15,13,2,"[3, 1]",upi
+sub_097,cust_097,Business,4999,CARD_EXPIRED,1,6,regular,22,0.92,25,28,0,[],upi
+sub_098,cust_098,Business,4999,NETWORK_ERROR,0,1,regular,24,0.91,20,20,2,"[1, 1]",netbanking
+sub_099,cust_099,Pro,1999,NETWORK_ERROR,1,2,regular,12,0.84,25,24,0,[],upi
+sub_100,cust_100,Starter,499,INSUFFICIENT_FUNDS,1,2,regular,8,0.83,20,22,1,[3],card

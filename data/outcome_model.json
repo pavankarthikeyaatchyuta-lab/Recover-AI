@@ -1,0 +1,47 @@
+{
+  "base_probabilities": {
+    "INSUFFICIENT_FUNDS": {
+      "immediate_retry": 0.18,
+      "payday_retry": 0.61,
+      "payment_link": 0.44,
+      "nudge": 0.31,
+      "plan_downgrade": 0.52
+    },
+    "CARD_EXPIRED": {
+      "immediate_retry": 0.05,
+      "payday_retry": 0.06,
+      "payment_link": 0.55,
+      "nudge": 0.28,
+      "plan_downgrade": 0.2
+    },
+    "MANDATE_REVOKED": {
+      "immediate_retry": 0.03,
+      "payday_retry": 0.04,
+      "payment_link": 0.38,
+      "nudge": 0.22,
+      "plan_downgrade": 0.15
+    },
+    "NETWORK_ERROR": {
+      "immediate_retry": 0.58,
+      "payday_retry": 0.6,
+      "payment_link": 0.45,
+      "nudge": 0.4,
+      "plan_downgrade": 0.3
+    },
+    "UPI_TIMEOUT": {
+      "immediate_retry": 0.52,
+      "payday_retry": 0.54,
+      "payment_link": 0.42,
+      "nudge": 0.38,
+      "plan_downgrade": 0.25
+    }
+  },
+  "tier_multipliers": {
+    "high_value": 1.15,
+    "regular": 1.0,
+    "at_risk": 0.7,
+    "first_time": 0.85
+  },
+  "seed": 42,
+  "note": "Both naive_retry and RecoverAI use this same model. Only the action chosen differs between systems."
+}
