@@ -227,7 +227,7 @@ def render_dashboard():
         st.markdown("**Database:** `SQLite (recoverai.db)`")
         st.markdown("---")
         st.markdown("#### 🔗 Repository")
-        st.markdown("[GitHub: RazorPay_Build](https://github.com/pavankarthikeyaatchyuta-lab/RazorPay_Build)")
+        st.markdown("[GitHub: Recover-AI](https://github.com/pavankarthikeyaatchyuta-lab/Recover-AI)")
 
     # 4. HEADER SECTION
     st.markdown("""
