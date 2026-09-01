@@ -3,6 +3,7 @@ dashboard.py — Step 10 of RecoverAI
 
 Interactive Streamlit dashboard showing live recovery metrics,
 counterfactual side-by-side analysis, and audit trails.
+Polished UI/UX with modern dark-mode aesthetic for Razorpay AI Buildathon.
 """
 
 import json
@@ -10,6 +11,7 @@ import os
 import sys
 import pandas as pd
 import streamlit as st
+import altair as alt
 
 # Setup import path for project root
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -21,11 +23,11 @@ from agent.stopping_rules import evaluate
 from agent.executor import _simulate_outcome
 from evaluation.counterfactual import compare
 from core.metrics import compute
-from core import audit, state
+from core import audit
 
 
 # ---------------------------------------------------------------------------
-# Data Loading & Pipeline
+# Data Loading & Pipeline (logic and data unchanged)
 # ---------------------------------------------------------------------------
 @st.cache_data
 def load_and_run_pipeline():
@@ -103,25 +105,152 @@ def load_and_run_pipeline():
 
 
 # ---------------------------------------------------------------------------
-# Dashboard Layout
+# Dashboard Layout & Custom UI/UX
 # ---------------------------------------------------------------------------
 def render_dashboard():
+    # 1. PAGE CONFIG
     st.set_page_config(
-        page_title="RecoverAI — Subscription Revenue Recovery",
+        page_title="RecoverAI",
         page_icon="⚡",
         layout="wide",
+        initial_sidebar_state="collapsed",
     )
 
-    st.title("⚡ RecoverAI — Autonomous Revenue Recovery Agent")
-    st.markdown(
-        "**Track 03:** AI Revenue Recovery | Real-time diagnostic & counterfactual evaluation"
-    )
-    st.markdown("---")
+    # 2. CUSTOM CSS
+    custom_css = """
+    <style>
+      /* Base background & typography */
+      .stApp {
+        background-color: #0f0f0f;
+        color: #f1f5f9;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      /* Metric Card styling */
+      .metric-card {
+        background-color: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      }
+      .card-top-blue { border-top: 3px solid #2563eb; }
+      .card-top-green { border-top: 3px solid #16a34a; }
+      .card-top-purple { border-top: 3px solid #8b5cf6; }
+      .card-top-orange { border-top: 3px solid #f59e0b; }
+
+      .card-label {
+        font-size: 13px;
+        color: #94a3b8;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .card-value {
+        font-size: 26px;
+        font-weight: 700;
+        color: #f8fafc;
+        margin: 6px 0 2px 0;
+      }
+      .card-delta {
+        font-size: 13px;
+        color: #10b981;
+        font-weight: 500;
+      }
+      .card-delta-muted {
+        font-size: 13px;
+        color: #94a3b8;
+        font-weight: 500;
+      }
+
+      /* Section header */
+      .section-header {
+        border-left: 3px solid #2563eb;
+        padding-left: 12px;
+        margin: 28px 0 14px 0;
+      }
+      .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+      }
+      .section-divider {
+        height: 1px;
+        background: #262626;
+        margin-top: 8px;
+        margin-bottom: 16px;
+      }
+
+      /* Pill badges */
+      .pill-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-right: 6px;
+      }
+      .pill-blue { background-color: rgba(37, 99, 235, 0.2); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.4); }
+      .pill-green { background-color: rgba(22, 163, 74, 0.2); color: #4ade80; border: 1px solid rgba(22, 163, 74, 0.4); }
+      .pill-purple { background-color: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.4); }
+      .pill-orange { background-color: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+      .pill-red { background-color: rgba(220, 38, 38, 0.2); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.4); }
+      .pill-grey { background-color: rgba(107, 114, 128, 0.2); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.4); }
+
+      /* Table overrides */
+      div[data-testid="stDataFrame"] {
+        background-color: #1a1a1a;
+        border-radius: 8px;
+        border: 1px solid #2a2a2a;
+      }
+
+      /* Sidebar */
+      section[data-testid="stSidebar"] {
+        background-color: #141414;
+        border-right: 1px solid #262626;
+      }
+    </style>
+    """
+    st.markdown(custom_css, unsafe_allow_html=True)
+
+    # 3. SIDEBAR
+    with st.sidebar:
+        st.markdown("### ⚡ RecoverAI `v1.0`")
+        st.caption("Track 03 · AI Revenue Recovery")
+        st.markdown("---")
+        st.markdown("#### 📋 Run Info")
+        st.markdown("**Dataset Size:** `100 subscriptions`")
+        st.markdown("**LLM Model:** `gemini-2.0-flash`")
+        st.markdown("**Simulation Mode:** `Active (KYC-Free)`")
+        st.markdown("**Database:** `SQLite (recoverai.db)`")
+        st.markdown("---")
+        st.markdown("#### 🔗 Repository")
+        st.markdown("[GitHub: RazorPay_Build](https://github.com/pavankarthikeyaatchyuta-lab/RazorPay_Build)")
+
+    # 4. HEADER SECTION
+    st.markdown("""
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 28px; font-weight: 800; color: #ffffff; margin-bottom: 4px;">⚡ RecoverAI</h1>
+      <div style="font-size: 16px; font-weight: 600; color: #e2e8f0; margin-bottom: 4px;">
+        Autonomous Subscription Revenue Recovery Agent
+      </div>
+      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;">
+        Razorpay AI Buildathon 2026 &bull; Track 03 &bull; AI Revenue Recovery
+      </div>
+      <div>
+        <span class="pill-badge pill-blue">LLM-Powered</span>
+        <span class="pill-badge pill-purple">Audit-Complete</span>
+        <span class="pill-badge pill-green">Counterfactual Evaluation</span>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     subs, baseline_res, recoverai_results, cf_data, metrics = load_and_run_pipeline()
     summary = cf_data["summary"]
 
-    # Calculate actioned metrics
+    # Calculate dynamic numbers
     actioned_subs = [
         r for r in recoverai_results
         if (r.get("action") or r.get("action_taken")) not in ("DO_NOT_ACT", "STOPPED")
@@ -130,8 +259,6 @@ def render_dashboard():
     actioned_count = len(actioned_subs)
     recovered_count = len([r for r in recoverai_results if r.get("outcome") == "SUCCESS"])
     actioned_rate = (recovered_count / actioned_count * 100) if actioned_count > 0 else 0.0
-    baseline_rate = (summary["baseline_recovered"] / summary["total"] * 100) if summary["total"] > 0 else 0.0
-    actioned_lift = actioned_rate - baseline_rate
     avoided_actions = (
         summary["baseline_unnecessary_actions"] - summary["recoverai_unnecessary_actions"]
     )
@@ -143,49 +270,63 @@ def render_dashboard():
     total_baseline_attempts = sum(b.get("attempts", 1) for b in baseline_res["per_subscription"])
 
     # -----------------------------------------------------------------------
-    # Row 1 — 4 Metric Cards (Positive, Accurate Framing)
+    # 5. METRIC CARDS (With Colored Top Border)
     # -----------------------------------------------------------------------
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.metric(
-            label="Recovery Rate (Actioned)",
-            value=f"{actioned_rate:.1f}%",
-            delta=f"+{actioned_lift:.1f}% vs 34% baseline",
-        )
+        st.markdown(f"""
+        <div class="metric-card card-top-blue">
+          <div class="card-label">Recovery Rate (Actioned)</div>
+          <div class="card-value">{actioned_rate:.1f}%</div>
+          <div class="card-delta">vs 34.0% baseline</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col2:
-        st.metric(
-            label="Revenue Recovered",
-            value=f"₹{metrics.get('revenue_recovered', 0):,}",
-            delta=f"{avoided_actions} contacts saved",
-        )
+        st.markdown(f"""
+        <div class="metric-card card-top-green">
+          <div class="card-label">Revenue Recovered</div>
+          <div class="card-value">₹{metrics.get('revenue_recovered', 0):,}</div>
+          <div class="card-delta">{avoided_actions} contacts saved</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col3:
-        st.metric(
-            label="Action Efficiency",
-            value=f"{actioned_count} targeted",
-            delta=f"vs {total_baseline_attempts} baseline attempts",
-            delta_color="off",
-        )
+        st.markdown(f"""
+        <div class="metric-card card-top-purple">
+          <div class="card-label">Action Efficiency</div>
+          <div class="card-value">{actioned_count} targeted</div>
+          <div class="card-delta-muted">vs {total_baseline_attempts} baseline attempts</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col4:
-        st.metric(
-            label="Spam Avoided",
-            value=f"{avoided_actions}",
-            delta=f"{spam_reduction_pct:.0f}% reduction",
-        )
-
-    st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="metric-card card-top-orange">
+          <div class="card-label">Spam Avoided</div>
+          <div class="card-value">{avoided_actions}</div>
+          <div class="card-delta">{spam_reduction_pct:.0f}% reduction</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # -----------------------------------------------------------------------
-    # Row 2 — Charts (Bar Chart with 0-baseline & Cohort Recovery Curve)
+    # 6. CHARTS SECTION
     # -----------------------------------------------------------------------
+    st.markdown("""
+    <div class="section-header">
+      <div class="section-title">Comparative Analysis & Recovery Timeline</div>
+    </div>
+    <div class="section-divider"></div>
+    """, unsafe_allow_html=True)
+
     c_left, c_right = st.columns(2)
 
     with c_left:
-        st.subheader("📊 Recovery by Failure Code (RecoverAI vs Baseline)")
+        st.caption("Recovery by Failure Code (RecoverAI vs Baseline)")
         fc_data = []
         by_fc = metrics.get("by_failure_code", {})
         
-        # Calculate baseline by failure code
         baseline_fc = {}
         for b in baseline_res["per_subscription"]:
             sub_id = b["subscription_id"]
@@ -209,23 +350,23 @@ def render_dashboard():
             df_fc = pd.DataFrame(fc_data)
             df_fc_melt = df_fc.melt(id_vars=["Failure Code"], var_name="System", value_name="Recovered")
             
-            import altair as alt
             chart_fc = (
                 alt.Chart(df_fc_melt)
-                .mark_bar()
+                .mark_bar(cornerRadiusTopLeft=3, cornerRadiusTopRight=3)
                 .encode(
-                    x=alt.X("Failure Code:N", title="Failure Code", axis=alt.Axis(labelAngle=-20)),
-                    y=alt.Y("Recovered:Q", title="Recovered Subscriptions", scale=alt.Scale(domainMin=0)),
-                    color=alt.Color("System:N", scale=alt.Scale(domain=["RecoverAI", "Baseline"], range=["#10B981", "#6B7280"])),
+                    x=alt.X("Failure Code:N", title="Failure Reason", axis=alt.Axis(labelAngle=-20, labelColor="#94a3b8", titleColor="#cbd5e1")),
+                    y=alt.Y("Recovered:Q", title="Recovered Count", scale=alt.Scale(domainMin=0), axis=alt.Axis(labelColor="#94a3b8", titleColor="#cbd5e1")),
+                    color=alt.Color("System:N", scale=alt.Scale(domain=["RecoverAI", "Baseline"], range=["#2563eb", "#6b7280"]), legend=alt.Legend(titleColor="#cbd5e1", labelColor="#94a3b8")),
                     xOffset="System:N",
                     tooltip=["Failure Code", "System", "Recovered"]
                 )
                 .properties(height=280)
+                .configure_view(strokeOpacity=0)
             )
             st.altair_chart(chart_fc, use_container_width=True)
 
     with c_right:
-        st.subheader("📈 Cohort Recovery Curve (Cumulative)")
+        st.caption("Cumulative Cohort Recovery Curve")
         cohort = metrics.get("cohort_recovery", {"day_1": 0, "day_3": 0, "day_7": 0})
         df_cohort = pd.DataFrame({
             "Day Cohort": ["Day 1", "Day 3", "Day 7"],
@@ -236,75 +377,98 @@ def render_dashboard():
             ],
         })
         
-        import altair as alt
         chart_cohort = (
             alt.Chart(df_cohort)
-            .mark_line(point=alt.OverlayMarkDef(size=60, fill="#3B82F6"), color="#3B82F6", strokeWidth=3)
+            .mark_line(point=alt.OverlayMarkDef(size=70, fill="#2563eb", stroke="#60a5fa", strokeWidth=2), color="#2563eb", strokeWidth=3)
             .encode(
-                x=alt.X("Day Cohort:N", sort=["Day 1", "Day 3", "Day 7"], title="Recovery Timeline"),
-                y=alt.Y("Cumulative Recovery Rate (%):Q", title="Recovery Rate (%)", scale=alt.Scale(domain=[0, max(35, int(cohort["day_7"] * 100) + 10)])),
+                x=alt.X("Day Cohort:N", sort=["Day 1", "Day 3", "Day 7"], title="Recovery Horizon", axis=alt.Axis(labelColor="#94a3b8", titleColor="#cbd5e1")),
+                y=alt.Y("Cumulative Recovery Rate (%):Q", title="Cumulative Recovery (%)", scale=alt.Scale(domain=[0, max(35, int(cohort["day_7"] * 100) + 10)]), axis=alt.Axis(labelColor="#94a3b8", titleColor="#cbd5e1")),
                 tooltip=["Day Cohort", "Cumulative Recovery Rate (%)"]
             )
             .properties(height=280)
+            .configure_view(strokeOpacity=0)
         )
         st.altair_chart(chart_cohort, use_container_width=True)
 
-    st.markdown("---")
-
     # -----------------------------------------------------------------------
-    # Row 3 — Counterfactual Table
+    # 7. COUNTERFACTUAL TABLE SECTION
     # -----------------------------------------------------------------------
-    st.subheader("⚖️ Per-Subscription Counterfactual Side-by-Side")
+    st.markdown("""
+    <div class="section-header">
+      <div class="section-title">Per-Subscription Counterfactual Evaluation</div>
+    </div>
+    <div class="section-divider"></div>
+    """, unsafe_allow_html=True)
 
     cf_rows = []
     for item in cf_data["per_subscription"]:
         cf_rows.append({
-            "subscription_id": item["subscription_id"],
-            "amount": f"₹{item['amount']}",
-            "failure_code": item["failure_code"],
-            "tier": item["tier"],
-            "baseline_action": item["baseline"]["action"],
-            "baseline_outcome": item["baseline"]["outcome"],
-            "recoverai_action": item["recoverai"]["action"],
-            "recoverai_outcome": item["recoverai"]["outcome"],
-            "delta": item["delta"],
+            "Subscription": item["subscription_id"],
+            "Amount": f"₹{item['amount']}",
+            "Failure Code": item["failure_code"],
+            "Tier": item["tier"],
+            "Baseline Action": item["baseline"]["action"],
+            "Baseline Outcome": item["baseline"]["outcome"],
+            "RecoverAI Action": item["recoverai"]["action"],
+            "RecoverAI Outcome": item["recoverai"]["outcome"],
+            "Delta": item["delta"],
         })
 
     df_table = pd.DataFrame(cf_rows)
 
-    def highlight_delta(row):
-        val = row["delta"]
+    def style_table(row):
+        val = row["Delta"]
         if val == "RECOVERAI_WON":
-            return ["background-color: rgba(16, 185, 129, 0.2)"] * len(row)
+            return ["border-left: 4px solid #16a34a; background-color: #142217; color: #f1f5f9;"] * len(row)
         elif val == "BASELINE_WON":
-            return ["background-color: rgba(239, 68, 68, 0.2)"] * len(row)
+            return ["border-left: 4px solid #dc2626; background-color: #241416; color: #f1f5f9;"] * len(row)
+        elif val == "BOTH_FAILED":
+            return ["border-left: 4px solid #6b7280; background-color: #171717; color: #9ca3af;"] * len(row)
         elif val == "RECOVERAI_STOPPED":
-            return ["background-color: rgba(107, 114, 128, 0.15)"] * len(row)
-        return [""] * len(row)
+            return ["border-left: 4px solid #f59e0b; background-color: #1f1b13; color: #cbd5e1;"] * len(row)
+        return ["background-color: #1a1a1a; color: #f1f5f9;"] * len(row)
 
-    styled_df = df_table.style.apply(highlight_delta, axis=1)
-    st.dataframe(styled_df, use_container_width=True, height=360)
+    styled_df = df_table.style.apply(style_table, axis=1)
+    st.dataframe(styled_df, use_container_width=True, height=380)
 
     # -----------------------------------------------------------------------
-    # Row 4 — Expandable Audit Trail
+    # 8. AUDIT TRAIL INSPECTOR
     # -----------------------------------------------------------------------
-    with st.expander("🔍 Audit Trail & Lifecycle Inspector"):
+    st.markdown("""
+    <div class="section-header">
+      <div class="section-title">Audit Trail & Deterministic Safety Inspector</div>
+    </div>
+    <div class="section-divider"></div>
+    """, unsafe_allow_html=True)
+
+    with st.expander("🔍 Inspect Structured Audit Trail by Subscription ID", expanded=False):
         sub_list = [s["subscription_id"] for s in subs]
-        selected_sub = st.selectbox("Select Subscription ID to inspect audit events:", sub_list)
+        selected_sub = st.selectbox("Select Subscription ID:", sub_list)
 
         events = audit.get_events(selected_sub)
         if events:
-            st.markdown(f"**Audit events for `{selected_sub}`:**")
-            events_table = [
-                {
-                    "Event ID": e["id"],
-                    "Event Type": e["event_type"],
-                    "Timestamp": e["timestamp"],
-                    "Data": json.dumps(e["data"]),
-                }
-                for e in events
-            ]
-            st.dataframe(pd.DataFrame(events_table), use_container_width=True)
+            st.markdown(f"**Event Log for `{selected_sub}`:**")
+
+            badge_map = {
+                "STOPPING_RULE_FIRED": "pill-red",
+                "DECISION_MADE": "pill-blue",
+                "POLICY_VALIDATED": "pill-purple",
+                "ACTION_EXECUTED": "pill-green",
+                "OUTCOME_RECORDED": "pill-orange",
+            }
+
+            for e in events:
+                evt_type = e["event_type"]
+                badge_class = badge_map.get(evt_type, "pill-grey")
+                st.markdown(f"""
+                <div style="background-color: #171717; border: 1px solid #2a2a2a; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
+                  <span class="pill-badge {badge_class}">{evt_type}</span>
+                  <span style="font-size: 12px; color: #94a3b8;">{e['timestamp']} &bull; Event #{e['id']}</span>
+                  <div style="margin-top: 6px; font-family: monospace; font-size: 13px; color: #e2e8f0; background: #0f0f0f; padding: 6px 10px; border-radius: 4px;">
+                    {json.dumps(e['data'])}
+                  </div>
+                </div>
+                """, unsafe_allow_html=True)
         else:
             st.info(f"No audit events recorded for {selected_sub} yet.")
 
