@@ -12,7 +12,9 @@ ENV/
 # Environment secrets
 .env
 
-# SQLite temp files
+# SQLite database & temp files
+recoverai.db
+*.db
 *.db-journal
 *.db-wal
 *.db-shm
