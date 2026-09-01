@@ -247,7 +247,7 @@ python main.py
 
 ### 4. Launch the Streamlit Dashboard
 ```bash
-streamlit run ui/dashboard.py
+python -m streamlit run ui/dashboard.py
 ```
 
 ---
@@ -292,7 +292,7 @@ EXECUTIVE SUMMARY & VALUE DEMONSTRATION
   Safety-First Proactive Stops:      30
 ======================================================================
 To view the interactive Streamlit dashboard, run:
-  streamlit run ui/dashboard.py
+  python -m streamlit run ui/dashboard.py
 ======================================================================
 ```
 

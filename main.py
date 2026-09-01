@@ -207,7 +207,7 @@ def run_batch(test_mode: bool = True):
     print(f"  Safety-First Proactive Stops:      {s['recoverai_stopped_proactively']}")
     print("=" * 70)
     print("To view the interactive Streamlit dashboard, run:")
-    print("  streamlit run ui/dashboard.py")
+    print("  python -m streamlit run ui/dashboard.py")
     print("=" * 70)
 
 
