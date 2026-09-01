@@ -368,26 +368,39 @@ def render_dashboard():
     with c_right:
         st.caption("Cumulative Cohort Recovery Curve")
         cohort = metrics.get("cohort_recovery", {"day_1": 0, "day_3": 0, "day_7": 0})
-        df_cohort = pd.DataFrame({
-            "Day Cohort": ["Day 1", "Day 3", "Day 7"],
-            "Cumulative Recovery Rate (%)": [
-                cohort["day_1"] * 100,
-                cohort["day_3"] * 100,
-                cohort["day_7"] * 100,
-            ],
-        })
+        day_1_val = round(cohort.get("day_1", 0.0) * 100, 1)
+        day_3_val = round(cohort.get("day_3", 0.0) * 100, 1)
+        day_7_val = round(cohort.get("day_7", 0.0) * 100, 1)
+        if day_7_val < day_3_val:
+            day_7_val = day_3_val
+
+        df_cohort = pd.DataFrame([
+            {"Day": "Day 1", "Cumulative Recovery (%)": day_1_val, "Label": f"{day_1_val}%"},
+            {"Day": "Day 3", "Cumulative Recovery (%)": day_3_val, "Label": f"{day_3_val}%"},
+            {"Day": "Day 7", "Cumulative Recovery (%)": day_7_val, "Label": f"{day_7_val}%"},
+        ])
         
-        chart_cohort = (
+        line = (
             alt.Chart(df_cohort)
-            .mark_line(point=alt.OverlayMarkDef(size=70, fill="#2563eb", stroke="#60a5fa", strokeWidth=2), color="#2563eb", strokeWidth=3)
+            .mark_line(point=alt.OverlayMarkDef(size=80, fill="#2563eb", stroke="#60a5fa", strokeWidth=2), color="#2563eb", strokeWidth=3)
             .encode(
-                x=alt.X("Day Cohort:N", sort=["Day 1", "Day 3", "Day 7"], title="Recovery Horizon", axis=alt.Axis(labelColor="#94a3b8", titleColor="#cbd5e1")),
-                y=alt.Y("Cumulative Recovery Rate (%):Q", title="Cumulative Recovery (%)", scale=alt.Scale(domain=[0, max(35, int(cohort["day_7"] * 100) + 10)]), axis=alt.Axis(labelColor="#94a3b8", titleColor="#cbd5e1")),
-                tooltip=["Day Cohort", "Cumulative Recovery Rate (%)"]
+                x=alt.X("Day:N", sort=["Day 1", "Day 3", "Day 7"], title="Recovery Timeline", axis=alt.Axis(labelAngle=0, labelColor="#94a3b8", titleColor="#cbd5e1")),
+                y=alt.Y("Cumulative Recovery (%):Q", title="Cumulative Recovery Rate (%)", scale=alt.Scale(domain=[0, max(35, int(day_7_val) + 12)]), axis=alt.Axis(labelColor="#94a3b8", titleColor="#cbd5e1")),
+                tooltip=["Day", "Cumulative Recovery (%)"]
             )
-            .properties(height=280)
-            .configure_view(strokeOpacity=0)
         )
+
+        labels = (
+            alt.Chart(df_cohort)
+            .mark_text(align="center", baseline="bottom", dy=-10, color="#cbd5e1", fontSize=12, fontWeight="bold")
+            .encode(
+                x=alt.X("Day:N", sort=["Day 1", "Day 3", "Day 7"]),
+                y=alt.Y("Cumulative Recovery (%):Q"),
+                text="Label:N"
+            )
+        )
+
+        chart_cohort = (line + labels).properties(height=280).configure_view(strokeOpacity=0)
         st.altair_chart(chart_cohort, use_container_width=True)
 
     # -----------------------------------------------------------------------
@@ -429,7 +442,23 @@ def render_dashboard():
         return ["background-color: #1a1a1a; color: #f1f5f9;"] * len(row)
 
     styled_df = df_table.style.apply(style_table, axis=1)
-    st.dataframe(styled_df, use_container_width=True, height=380)
+    st.dataframe(
+        styled_df,
+        use_container_width=True,
+        hide_index=False,
+        height=400,
+        column_config={
+            "Subscription": st.column_config.TextColumn("Subscription", width="medium"),
+            "Amount": st.column_config.TextColumn("Amount", width="small"),
+            "Failure Code": st.column_config.TextColumn("Failure Code", width="medium"),
+            "Tier": st.column_config.TextColumn("Tier", width="small"),
+            "Baseline Action": st.column_config.TextColumn("Baseline Action", width="medium"),
+            "Baseline Outcome": st.column_config.TextColumn("Baseline Outcome", width="small"),
+            "RecoverAI Action": st.column_config.TextColumn("RecoverAI Action", width="medium"),
+            "RecoverAI Outcome": st.column_config.TextColumn("RecoverAI Outcome", width="small"),
+            "Delta": st.column_config.TextColumn("Delta", width="medium"),
+        },
+    )
 
     # -----------------------------------------------------------------------
     # 8. AUDIT TRAIL INSPECTOR
