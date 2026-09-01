@@ -189,22 +189,26 @@ def run_batch(test_mode: bool = True):
 
     # 8. Executive Summary Output
     s = cf_data["summary"]
+    actioned_total = s['total'] - s['recoverai_stopped_proactively']
+    actioned_rate = (s['recoverai_recovered'] / actioned_total * 100) if actioned_total > 0 else 0.0
+    baseline_rate = (s['baseline_recovered'] / s['total'] * 100) if s['total'] > 0 else 0.0
+    avoided_spam = s['baseline_unnecessary_actions'] - s['recoverai_unnecessary_actions']
+    spam_reduction = (avoided_spam / s['baseline_unnecessary_actions'] * 100) if s['baseline_unnecessary_actions'] > 0 else 0.0
+
     print("\n" + "=" * 70)
-    print("EXECUTIVE SUMMARY & VALUE DEMONSTRATION")
+    print("EXECUTIVE SUMMARY & BENCHMARK PERFORMANCE")
     print("=" * 70)
     print(f"  Total Subscriptions Evaluated:     {s['total']}")
-    print(f"  RecoverAI Recovered:               {s['recoverai_recovered']} ({metrics_data['recovery_rate']*100:.1f}%)")
-    print(f"  Baseline Recovered:                {s['baseline_recovered']} ({metrics_data['baseline_recovery_rate']*100:.1f}%)")
-    print(f"  Net Recovery Lift:                 {s['recovery_lift']:+d} ({s['recovery_lift_pct']:+.1f}%)")
+    print(f"  RecoverAI Actioned (Targeted):     {actioned_total} subscriptions")
+    print(f"  Baseline Actioned (Blind):         {s['total']} subscriptions (3 attempts each)")
     print("  ------------------------------------------------------------------")
-    print(f"  RecoverAI Revenue Recovered:       Rs. {metrics_data['revenue_recovered']:,}")
-    print(f"  Baseline Revenue Recovered:        Rs. {metrics_data['baseline_revenue_recovered']:,}")
-    print(f"  Incremental Revenue Created:       Rs. {metrics_data['incremental_revenue']:,}")
+    print(f"  Recovery Rate (Actioned Only):     {actioned_rate:.1f}% (RecoverAI) vs {baseline_rate:.1f}% (Baseline)")
+    print(f"  Revenue Recovered:                 Rs. {metrics_data['revenue_recovered']:,} (Targeted clean revenue)")
     print("  ------------------------------------------------------------------")
-    print(f"  Baseline Wasted Retry Attempts:    {s['baseline_unnecessary_actions']}")
-    print(f"  RecoverAI Wasted Actions:          {s['recoverai_unnecessary_actions']}")
-    print(f"  Spam/Wasted Contact Avoided:       {s['baseline_unnecessary_actions'] - s['recoverai_unnecessary_actions']} attempts saved")
-    print(f"  Safety-First Proactive Stops:      {s['recoverai_stopped_proactively']}")
+    print(f"  Baseline Wasted Retry Attempts:    {s['baseline_unnecessary_actions']} spam attempts")
+    print(f"  RecoverAI Wasted Actions:          {s['recoverai_unnecessary_actions']} single attempts")
+    print(f"  Spam / Wasted Contact Avoided:     {avoided_spam} attempts saved ({spam_reduction:.0f}% reduction)")
+    print(f"  Safety-First Proactive Stops:      {s['recoverai_stopped_proactively']} high-risk / churn-intent cases")
     print("=" * 70)
     print("To view the interactive Streamlit dashboard, run:")
     print("  python -m streamlit run ui/dashboard.py")
