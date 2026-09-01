@@ -12,7 +12,7 @@ Recurring subscription payments fail for diverse reasons — **insufficient fund
 
 **RecoverAI** is an intelligent, context-aware revenue recovery agent built specifically for Indian and global recurring payment ecosystems (Cards, UPI AutoPay, e-Mandates, Netbanking). It diagnoses **why** a payment failed, enriches the transaction with rich customer behavioral signals, applies deterministic safety gates, uses an LLM to formulate tailored recovery strategies, executes actions through Razorpay APIs, and honestly benchmarks its performance against a naive retry baseline.
 
-> ℹ️ **Note on Razorpay Integration:** Razorpay test-mode API integration is fully implemented in `api/razorpay_client.py`. The batch runner uses simulated responses (`TEST_MODE=true`) since account verification requires PAN. The API wrapper is production-ready and can be activated by setting `TEST_MODE=false` with valid test-mode credentials.
+> ℹ️ **Razorpay Integration:** RecoverAI integrates with Razorpay test-mode APIs for supported operations — Payment Links and Orders. Subscription charge retry is handled in the simulation layer. Production recurring-charge execution would require Razorpay Subscriptions API access and verified credentials.
 
 ---
 
@@ -135,7 +135,7 @@ Deterministic safety gates that run **before** the LLM. First rule to fire wins:
 *Benchmark Result on 100 records:* **74 Clear (Proceed to AI) | 9 Proactively Stopped | 17 Escalated to Merchant**.
 
 ### 3. AI Decision Agent (`agent/decision_agent.py`)
-- Powered by Google Gemini / Claude via the official `google-genai` SDK (`gemini-2.0-flash`).
+- Powered by Google Gemini via the google-genai SDK (`gemini-2.0-flash`).
 - Reasons over customer tenure, payment history, preferred channel, and payday signal.
 - **Available Actions**:
   - `PAYDAY_RETRY`: Retries on customer's usual payment day (default for `INSUFFICIENT_FUNDS`).
@@ -252,26 +252,27 @@ python -m streamlit run ui/dashboard.py
 
 ## 📈 Benchmark Results
 
-> 💡 **Note on Evaluation:** RecoverAI deliberately avoids contacting 26 high-risk or churn-intent accounts that the naive baseline blindly retried. On the **74 actionable cases** it touched, RecoverAI outperforms the baseline by **+3.8 percentage points (37.8% vs. 34.0%)** while eliminating **152 wasted spam attempts**.
+> 💡 **Note on Evaluation:** RecoverAI deliberately avoids contacting 26 high-risk or churn-intent accounts that the naive baseline blindly retried. On the **74 actionable cases** it touched, RecoverAI outperforms the baseline by **+17.4 percentage points (51.4% vs. 34.0%)** while eliminating **162 wasted spam attempts**.
 
 | Metric | Naive Retry Baseline | RecoverAI Agent |
 | :--- | :---: | :---: |
 | **Subscriptions actioned** | 100 (all, blindly) | **74 (targeted)** |
-| **Recovery rate (actioned only)** | 34.0% | **37.8%** |
-| **Revenue recovered** | ₹84,466 | **₹64,972** |
+| **Recovery rate (actioned only)** | 34.0% | **51.4%** |
+| **Revenue recovered** | ₹84,466 | **₹87,962** |
 | **Customer contacts made** | 300 attempts | **74 contacts** |
-| **Unnecessary retry actions** | 198 | **46** |
-| **Spam contacts avoided** | — | **152 (77% reduction)** |
+| **Unnecessary retry actions** | 198 | **36** |
+| **Spam contacts avoided** | — | **162 (82% reduction)** |
 | **High-risk customers protected** | 0 | **26 proactively stopped / escalated** |
+
+> Both systems use identical per-subscription random seeds (Common Random Numbers method) to reduce evaluation variance and ensure a fair comparison.
 
 ---
 
-## ⚠️ Current Limitations & Production Roadmap
+## ⚠️ Known Limitations
 
-- **Single Recovery Pass per Batch Run:** RecoverAI evaluates one strategic action per subscription in the initial batch pass. While the SQLite FSM architecture explicitly supports multi-attempt re-entry (`MONITORING ➔ DECIDING`), full multi-day feedback loops would run in production via scheduled webhooks / crons.
-- **Calibrated Outcome Probabilities:** Outcome probabilities are estimated based on recurring billing industry benchmarks to demonstrate relative agent performance and fair counterfactual comparison, rather than empirical production telemetry.
-- **Test-Mode API Execution:** The Razorpay integration uses verified simulated responses (`TEST_MODE=true`) for reproducible zero-friction evaluation; the wrapper is production-ready and switches to live mode with valid API keys.
-- **Audit Input Logging:** Future iterations can persist the raw LLM prompt context alongside the existing structured decision payloads in the audit log.
+- **Single recovery cycle per run:** The FSM supports re-entry into DECIDING after a failed action, but main.py currently executes one action per subscription per batch. Multi-day retry loops are an extension point.
+- **Simulated outcomes:** Recovery probabilities are estimated benchmarks intended to demonstrate relative agent performance, not empirically validated figures.
+- **Evaluation uses deterministic fallback:** The counterfactual benchmark uses RecoverAI's deterministic decision path (_fallback_decision) rather than live LLM calls, ensuring reproducibility. The LLM is used in the live agent loop (main.py) but not in the benchmark comparison.
 
 ---
 

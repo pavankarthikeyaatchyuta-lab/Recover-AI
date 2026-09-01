@@ -168,14 +168,9 @@ if __name__ == "__main__":
     # --- Simulate RecoverAI results ---
     # Use stopping rules to partition, then simulate with smarter actions
     from agent.stopping_rules import evaluate
-
-    ACTION_MAP = {
-        "INSUFFICIENT_FUNDS": "PAYDAY_RETRY",
-        "CARD_EXPIRED": "PAYMENT_LINK",
-        "MANDATE_REVOKED": "PAYMENT_LINK",
-        "NETWORK_ERROR": "IMMEDIATE_RETRY",
-        "UPI_TIMEOUT": "IMMEDIATE_RETRY",
-    }
+    from agent.decision_agent import _fallback_decision
+    from agent.policy_gate import validate
+    from agent.executor import _simulate_outcome
 
     recoverai_per_sub = []
     for sub in subscriptions:
@@ -191,25 +186,30 @@ if __name__ == "__main__":
                 "amount": amount,
                 "failure_code": fc,
                 "tier": tier,
-                "action": "DO_NOT_ACT" if stopping.disposition == "STOPPED" else "DO_NOT_ACT",
+                "action": "DO_NOT_ACT" if stopping.disposition == "STOPPED" else "ESCALATED",
                 "timing_days": 0,
                 "outcome": "NO_ACTION",
                 "rationale": stopping.reason or "",
             })
             continue
 
-        action = ACTION_MAP.get(fc, "PAYDAY_RETRY")
-        outcome, prob = _simulate_outcome(action, fc, tier, sub_id)
+        # Deterministic RecoverAI pipeline (no LLM call for evaluation)
+        decision = _fallback_decision(sub)
+        validated = validate(decision, sub)
+        virtual_day = sub.get("days_since_failure", 0) + validated.get("timing_days", 0)
+        outcome, prob = _simulate_outcome(
+            validated["action"], fc, tier, sub_id, virtual_day=virtual_day
+        )
 
         recoverai_per_sub.append({
             "subscription_id": sub_id,
             "amount": amount,
             "failure_code": fc,
             "tier": tier,
-            "action": action,
-            "timing_days": 2,
+            "action": validated["action"],
+            "timing_days": validated["timing_days"],
             "outcome": outcome,
-            "rationale": f"Smart action {action} for {fc}.",
+            "rationale": validated.get("rationale", ""),
         })
 
     # --- Compare ---

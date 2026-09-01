@@ -139,6 +139,7 @@ def run_batch(test_mode: bool = True):
             "action_taken": exec_res["action_taken"],
             "simulated": exec_res["simulated"],
             "outcome_probability": exec_res["outcome_probability"],
+            "virtual_execution_day": exec_res.get("virtual_execution_day", 0),
         })
 
         # 4.7 State: MONITORING & Final Disposition

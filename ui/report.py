@@ -326,8 +326,9 @@ def generate_report(
             continue
 
         act = action_map.get(fc, "PAYDAY_RETRY")
-        outcome, _ = _simulate_outcome(act, fc, tier, sub_id)
         timing = 1 if act == "IMMEDIATE_RETRY" else (3 if act == "PAYDAY_RETRY" else 2)
+        virtual_day = sub.get("days_since_failure", 0) + timing
+        outcome, _ = _simulate_outcome(act, fc, tier, sub_id, virtual_day=virtual_day)
 
         recoverai_results.append({
             "subscription_id": sub_id,

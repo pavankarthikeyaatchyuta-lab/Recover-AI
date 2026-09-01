@@ -50,13 +50,14 @@ def _load_outcome_model() -> dict:
 # ---------------------------------------------------------------------------
 # Outcome simulation
 # ---------------------------------------------------------------------------
-def _subscription_seed(subscription_id: str) -> int:
-    """Deterministic seed derived from subscription_id."""
-    return int(hashlib.md5(subscription_id.encode()).hexdigest(), 16) % (2**32)
+def _subscription_seed(subscription_id: str, virtual_day: int = 0) -> int:
+    """Deterministic seed derived from subscription_id and virtual execution day."""
+    seed_str = f"{subscription_id}_{virtual_day}"
+    return int(hashlib.md5(seed_str.encode()).hexdigest(), 16) % (2**32)
 
 
 def _simulate_outcome(
-    action: str, failure_code: str, tier: str, subscription_id: str
+    action: str, failure_code: str, tier: str, subscription_id: str, virtual_day: int = 0
 ) -> tuple[str, float]:
     """Simulate whether a recovery action succeeds using outcome_model.json.
 
@@ -74,7 +75,7 @@ def _simulate_outcome(
     multiplier = model["tier_multipliers"].get(tier, 1.0)
     final_p = min(base_p * multiplier, 0.95)
 
-    rng = random.Random(_subscription_seed(subscription_id))
+    rng = random.Random(_subscription_seed(subscription_id, virtual_day))
     outcome = "SUCCESS" if rng.random() < final_p else "FAILURE"
 
     return outcome, round(final_p, 4)
@@ -164,6 +165,7 @@ def execute(decision: dict, sub: dict, test_mode: bool = True) -> dict:
     """
     action = decision["action"]
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    virtual_day = sub.get("days_since_failure", 0) + decision.get("timing_days", 0)
 
     # DO_NOT_ACT: no execution needed
     if action == "DO_NOT_ACT":
@@ -171,6 +173,7 @@ def execute(decision: dict, sub: dict, test_mode: bool = True) -> dict:
             "subscription_id": sub["subscription_id"],
             "action_taken": "DO_NOT_ACT",
             "executed_at": now,
+            "virtual_execution_day": virtual_day,
             "api_response": {},
             "simulated": test_mode,
             "outcome": "NO_ACTION",
@@ -188,6 +191,7 @@ def execute(decision: dict, sub: dict, test_mode: bool = True) -> dict:
                 "subscription_id": sub["subscription_id"],
                 "action_taken": action,
                 "executed_at": now,
+                "virtual_execution_day": virtual_day,
                 "api_response": {"error": str(e)},
                 "simulated": False,
                 "outcome": "FAILURE",
@@ -197,13 +201,14 @@ def execute(decision: dict, sub: dict, test_mode: bool = True) -> dict:
     # Outcome simulation (always uses the model, even in real mode,
     # because we can't know real-world outcome instantly)
     outcome, outcome_probability = _simulate_outcome(
-        action, sub["failure_code"], sub["tier"], sub["subscription_id"]
+        action, sub["failure_code"], sub["tier"], sub["subscription_id"], virtual_day=virtual_day
     )
 
     return {
         "subscription_id": sub["subscription_id"],
         "action_taken": action,
         "executed_at": now,
+        "virtual_execution_day": virtual_day,
         "api_response": api_response,
         "simulated": test_mode,
         "outcome": outcome,
