@@ -39,9 +39,11 @@ def _now() -> str:
 # ---------------------------------------------------------------------------
 # Init (called by state.init_db or standalone)
 # ---------------------------------------------------------------------------
-def init_db() -> None:
+def init_db(reset: bool = False) -> None:
     """Create the audit_log table if it does not exist."""
     conn = _connect()
+    if reset:
+        conn.execute("DROP TABLE IF EXISTS audit_log")
     conn.execute("""
         CREATE TABLE IF NOT EXISTS audit_log (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,

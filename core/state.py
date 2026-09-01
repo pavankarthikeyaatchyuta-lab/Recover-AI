@@ -57,9 +57,11 @@ def _now() -> str:
 # ---------------------------------------------------------------------------
 # Public interface
 # ---------------------------------------------------------------------------
-def init_db() -> None:
+def init_db(reset: bool = False) -> None:
     """Create the subscriptions table if it does not exist."""
     conn = _connect()
+    if reset:
+        conn.execute("DROP TABLE IF EXISTS subscriptions")
     conn.execute("""
         CREATE TABLE IF NOT EXISTS subscriptions (
             subscription_id TEXT PRIMARY KEY,

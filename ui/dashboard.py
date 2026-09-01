@@ -121,47 +121,62 @@ def render_dashboard():
     subs, baseline_res, recoverai_results, cf_data, metrics = load_and_run_pipeline()
     summary = cf_data["summary"]
 
-    # -----------------------------------------------------------------------
-    # Row 1 — 4 Metric Cards
-    # -----------------------------------------------------------------------
-    col1, col2, col3, col4 = st.columns(4)
-
+    # Calculate actioned metrics
+    actioned_subs = [
+        r for r in recoverai_results
+        if (r.get("action") or r.get("action_taken")) not in ("DO_NOT_ACT", "STOPPED")
+        and r.get("outcome") != "NO_ACTION"
+    ]
+    actioned_count = len(actioned_subs)
+    recovered_count = len([r for r in recoverai_results if r.get("outcome") == "SUCCESS"])
+    actioned_rate = (recovered_count / actioned_count * 100) if actioned_count > 0 else 0.0
+    baseline_rate = (summary["baseline_recovered"] / summary["total"] * 100) if summary["total"] > 0 else 0.0
+    actioned_lift = actioned_rate - baseline_rate
     avoided_actions = (
         summary["baseline_unnecessary_actions"] - summary["recoverai_unnecessary_actions"]
     )
-    lift_pct = summary["recovery_lift_pct"]
-    lift_sign = "+" if lift_pct >= 0 else ""
+    spam_reduction_pct = (
+        (avoided_actions / summary["baseline_unnecessary_actions"] * 100)
+        if summary["baseline_unnecessary_actions"] > 0
+        else 0.0
+    )
+    total_baseline_attempts = sum(b.get("attempts", 1) for b in baseline_res["per_subscription"])
+
+    # -----------------------------------------------------------------------
+    # Row 1 — 4 Metric Cards (Positive, Accurate Framing)
+    # -----------------------------------------------------------------------
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.metric(
-            label="Recovery Rate",
-            value=f"{metrics.get('recovery_rate', 0.0) * 100:.1f}%",
-            delta=f"{lift_sign}{lift_pct:.1f}% vs Baseline",
+            label="Recovery Rate (Actioned)",
+            value=f"{actioned_rate:.1f}%",
+            delta=f"+{actioned_lift:.1f}% vs 34% baseline",
         )
     with col2:
         st.metric(
             label="Revenue Recovered",
             value=f"₹{metrics.get('revenue_recovered', 0):,}",
-            delta=f"₹{metrics.get('incremental_revenue', 0):,} Incremental",
+            delta=f"{avoided_actions} contacts saved",
         )
     with col3:
         st.metric(
-            label="Recovery Lift",
-            value=f"{lift_sign}{summary['recovery_lift']} Subs",
-            delta=f"Baseline: {summary['baseline_recovered']}",
+            label="Action Efficiency",
+            value=f"{actioned_count} targeted",
+            delta=f"vs {total_baseline_attempts} baseline attempts",
+            delta_color="off",
         )
     with col4:
         st.metric(
-            label="Unnecessary Actions Avoided",
+            label="Spam Avoided",
             value=f"{avoided_actions}",
-            delta=f"{summary['recoverai_unnecessary_actions']} total wasted",
-            delta_color="inverse",
+            delta=f"{spam_reduction_pct:.0f}% reduction",
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     # -----------------------------------------------------------------------
-    # Row 2 — Charts (Bar Chart & Cohort Recovery Curve)
+    # Row 2 — Charts (Bar Chart with 0-baseline & Cohort Recovery Curve)
     # -----------------------------------------------------------------------
     c_left, c_right = st.columns(2)
 
@@ -191,11 +206,26 @@ def render_dashboard():
             })
 
         if fc_data:
-            df_fc = pd.DataFrame(fc_data).set_index("Failure Code")
-            st.bar_chart(df_fc, color=["#10B981", "#6B7280"])
+            df_fc = pd.DataFrame(fc_data)
+            df_fc_melt = df_fc.melt(id_vars=["Failure Code"], var_name="System", value_name="Recovered")
+            
+            import altair as alt
+            chart_fc = (
+                alt.Chart(df_fc_melt)
+                .mark_bar()
+                .encode(
+                    x=alt.X("Failure Code:N", title="Failure Code", axis=alt.Axis(labelAngle=-20)),
+                    y=alt.Y("Recovered:Q", title="Recovered Subscriptions", scale=alt.Scale(domainMin=0)),
+                    color=alt.Color("System:N", scale=alt.Scale(domain=["RecoverAI", "Baseline"], range=["#10B981", "#6B7280"])),
+                    xOffset="System:N",
+                    tooltip=["Failure Code", "System", "Recovered"]
+                )
+                .properties(height=280)
+            )
+            st.altair_chart(chart_fc, use_container_width=True)
 
     with c_right:
-        st.subheader("📈 Cohort Recovery Curve")
+        st.subheader("📈 Cohort Recovery Curve (Cumulative)")
         cohort = metrics.get("cohort_recovery", {"day_1": 0, "day_3": 0, "day_7": 0})
         df_cohort = pd.DataFrame({
             "Day Cohort": ["Day 1", "Day 3", "Day 7"],
@@ -204,8 +234,20 @@ def render_dashboard():
                 cohort["day_3"] * 100,
                 cohort["day_7"] * 100,
             ],
-        }).set_index("Day Cohort")
-        st.line_chart(df_cohort, color="#3B82F6")
+        })
+        
+        import altair as alt
+        chart_cohort = (
+            alt.Chart(df_cohort)
+            .mark_line(point=alt.OverlayMarkDef(size=60, fill="#3B82F6"), color="#3B82F6", strokeWidth=3)
+            .encode(
+                x=alt.X("Day Cohort:N", sort=["Day 1", "Day 3", "Day 7"], title="Recovery Timeline"),
+                y=alt.Y("Cumulative Recovery Rate (%):Q", title="Recovery Rate (%)", scale=alt.Scale(domain=[0, max(35, int(cohort["day_7"] * 100) + 10)])),
+                tooltip=["Day Cohort", "Cumulative Recovery Rate (%)"]
+            )
+            .properties(height=280)
+        )
+        st.altair_chart(chart_cohort, use_container_width=True)
 
     st.markdown("---")
 

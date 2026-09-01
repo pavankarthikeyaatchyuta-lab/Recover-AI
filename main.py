@@ -43,10 +43,10 @@ def run_batch(test_mode: bool = True):
     print("RECOVERAI - AUTONOMOUS SUBSCRIPTION REVENUE RECOVERY BATCH RUN")
     print("=" * 70)
 
-    # 1. Initialize State and Audit DB
-    state.init_db()
-    audit.init_db()
-    print("[+] State Machine & Audit Log databases initialized (recoverai.db)")
+    # 1. Initialize State and Audit DB (clean reset)
+    state.init_db(reset=True)
+    audit.init_db(reset=True)
+    print("[+] State Machine & Audit Log databases initialized cleanly (recoverai.db)")
 
     # 2. Load Dataset & Model
     with open(subs_path, "r", encoding="utf-8") as f:
