@@ -13,6 +13,8 @@ Recurring subscription payments fail for diverse reasons — **insufficient fund
 
 **RecoverAI** is an intelligent, context-aware revenue recovery agent built specifically for Indian and global recurring payment ecosystems (Cards, UPI AutoPay, e-Mandates, Netbanking). It diagnoses **why** a payment failed, enriches the transaction with rich customer behavioral signals, applies deterministic safety gates, uses an LLM to formulate tailored recovery strategies, executes actions through Razorpay APIs, and honestly benchmarks its performance against a naive retry baseline.
 
+> ℹ️ **Note on Razorpay Integration:** Razorpay test-mode API integration is fully implemented in `api/razorpay_client.py`. The batch runner uses simulated responses (`TEST_MODE=true`) since account verification requires PAN. The API wrapper is production-ready and can be activated by setting `TEST_MODE=false` with valid test-mode credentials.
+
 ---
 
 ## 🎯 Core Agent Loop
