@@ -252,6 +252,8 @@ python -m streamlit run ui/dashboard.py
 
 ## 📈 Benchmark Results
 
+> 💡 **Note on Evaluation:** RecoverAI deliberately avoids contacting 26 high-risk or churn-intent accounts that the naive baseline blindly retried. On the **74 actionable cases** it touched, RecoverAI outperforms the baseline by **+3.8 percentage points (37.8% vs. 34.0%)** while eliminating **152 wasted spam attempts**.
+
 | Metric | Naive Retry Baseline | RecoverAI Agent |
 | :--- | :---: | :---: |
 | **Subscriptions actioned** | 100 (all, blindly) | **74 (targeted)** |
@@ -262,7 +264,14 @@ python -m streamlit run ui/dashboard.py
 | **Spam contacts avoided** | — | **152 (77% reduction)** |
 | **High-risk customers protected** | 0 | **26 proactively stopped / escalated** |
 
-> **Key Insight:** RecoverAI achieves a **higher per-action recovery rate (37.8% vs. 34.0%)** while proactively stopping 26 high-risk or churn-intent accounts, eliminating **152 unnecessary spam retry attempts** and protecting customer goodwill.
+---
+
+## ⚠️ Current Limitations & Production Roadmap
+
+- **Single Recovery Pass per Batch Run:** RecoverAI evaluates one strategic action per subscription in the initial batch pass. While the SQLite FSM architecture explicitly supports multi-attempt re-entry (`MONITORING ➔ DECIDING`), full multi-day feedback loops would run in production via scheduled webhooks / crons.
+- **Calibrated Outcome Probabilities:** Outcome probabilities are estimated based on recurring billing industry benchmarks to demonstrate relative agent performance and fair counterfactual comparison, rather than empirical production telemetry.
+- **Test-Mode API Execution:** The Razorpay integration uses verified simulated responses (`TEST_MODE=true`) for reproducible zero-friction evaluation; the wrapper is production-ready and switches to live mode with valid API keys.
+- **Audit Input Logging:** Future iterations can persist the raw LLM prompt context alongside the existing structured decision payloads in the audit log.
 
 ---
 
@@ -270,5 +279,6 @@ python -m streamlit run ui/dashboard.py
 
 - **Track**: Track 03 — AI Revenue Recovery
 - **Project**: RecoverAI (Autonomous Subscription Revenue Recovery Agent)
-- **Author**: Atchyuta Pavan Karthikeya | B.Tech CSE (AI & ML), Ramachandra College of Engineering, Eluru
+- **Author**: **Atchyuta Pavan Karthikeya** | B.Tech CSE (AI & ML), Ramachandra College of Engineering, Eluru
+- **Connect**: [GitHub Profile](https://github.com/pavankarthikeyaatchyuta-lab) &bull; [LinkedIn Profile](https://www.linkedin.com/in/pavankarthikeya) &bull; [Email Contact](mailto:pavankarthikeyaatchyuta@gmail.com)
 - **Core Technology Stack**: Python 3.13, Google Gemini (`gemini-2.0-flash` / `google-genai`), Razorpay Python SDK, SQLite3, Streamlit, Jinja2, Pandas, Altair
