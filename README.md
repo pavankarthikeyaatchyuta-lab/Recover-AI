@@ -1,7 +1,6 @@
 # ⚡ RecoverAI — Autonomous Subscription Revenue Recovery Agent
 
-> **Razorpay AI Buildathon 2026 — Track 03: AI Revenue Recovery**  
-> Build-to-Hire Project | AI Builder Internship Candidate Track (₹75,000/month, Bangalore)
+> **Razorpay AI Buildathon 2026 — Track 03: AI Revenue Recovery**
 
 ---
 
@@ -73,7 +72,7 @@ Failed Subscription
 | **Card Expiry Handling** | ❌ Blindly retries expired token | ✅ Issues Razorpay Payment Link for new card capture |
 | **Mandate Revocations** | ❌ Re-attempts revoked mandate | ✅ Identifies intent signal and escalates to merchant review |
 | **Customer Protection** | ❌ Spams at-risk and chronic non-payers | ✅ Enforces early stopping caps to protect brand reputation |
-| **Wasted Retries** | ⚠️ High (198 failed contact attempts) | 📉 Low (78% reduction in unnecessary actions) |
+| **Wasted Retries** | ⚠️ High (198 failed contact attempts) | 📉 Low (77% reduction in unnecessary actions) |
 | **Merchant Safety** | ❌ Uncontrolled actions | ✅ Enforces discount caps and plan downgrade eligibility |
 
 ---
@@ -108,7 +107,6 @@ recoverai/
 ├── reports/
 │   ├── audit_log.csv             # Full event audit export
 │   └── recovery_report.html      # Self-contained merchant HTML report
-├── recoverai.db                  # SQLite database (State machine & Audit log)
 ├── main.py                       # End-to-end batch execution pipeline
 ├── .env.example                  # Environment configuration template
 └── README.md                     # Complete project documentation
@@ -160,7 +158,7 @@ Deterministic safety gates that run **before** the LLM. First rule to fire wins:
 - Live-mode ready: creates test-mode **Razorpay Payment Links**, **Orders**, and **Payment Status Fetches** with paise conversion.
 
 ### 6. Finite State Machine & Audit Trail (`core/state.py` + `core/audit.py`)
-- Persisted in SQLite with WAL mode (`recoverai.db`).
+- Persisted in SQLite with WAL mode (`recoverai.db` generated at runtime).
 - Strict lifecycle states: `FAILED` ➔ `DIAGNOSING` ➔ `DECIDING` ➔ `ACTING` ➔ `MONITORING` ➔ `RECOVERED` | `STOPPED` | `ESCALATED`.
 - Rejects illegal transitions with `ValueError`.
 - Logs structured events: `STOPPING_RULE_FIRED`, `DECISION_MADE`, `POLICY_VALIDATED`, `ACTION_EXECUTED`, `OUTCOME_RECORDED`.
@@ -172,7 +170,7 @@ Deterministic safety gates that run **before** the LLM. First rule to fire wins:
 
 ### 8. User Interface & Reports (`ui/`)
 - **Streamlit Interactive Dashboard (`ui/dashboard.py`)**:
-  - Row 1: 4 Top-line KPI Cards.
+  - Row 1: 4 Top-line KPI Cards (Recovery Rate on Actioned Subs, Revenue Recovered, Action Efficiency, Spam Avoided).
   - Row 2: Dual charts (Failure Code breakdown & Cohort Recovery Curve).
   - Row 3: Color-coded counterfactual comparison table.
   - Row 4: Expandable interactive Audit Trail inspector.
@@ -252,27 +250,19 @@ python -m streamlit run ui/dashboard.py
 
 ---
 
-## 📈 Benchmark Performance & Executive Summary
+## 📈 Benchmark Results
 
-```text
-======================================================================
-RECOVERAI - AUTONOMOUS SUBSCRIPTION REVENUE RECOVERY BATCH RUN
-======================================================================
-  Total Subscriptions Evaluated:     100
-  RecoverAI Actioned (Targeted):     74 subscriptions
-  Baseline Actioned (Blind):         100 subscriptions (3 attempts each)
+| Metric | Naive Retry Baseline | RecoverAI Agent |
+| :--- | :---: | :---: |
+| **Subscriptions actioned** | 100 (all, blindly) | **74 (targeted)** |
+| **Recovery rate (actioned only)** | 34.0% | **37.8%** |
+| **Revenue recovered** | ₹84,466 | **₹64,972** |
+| **Customer contacts made** | 300 attempts | **74 contacts** |
+| **Unnecessary retry actions** | 198 | **46** |
+| **Spam contacts avoided** | — | **152 (77% reduction)** |
+| **High-risk customers protected** | 0 | **26 proactively stopped / escalated** |
 
-  Recovery Rate (Actioned Only):     37.8% (RecoverAI) vs 34.0% (Baseline)
-  Revenue Recovered:                 Rs. 64,972 (Targeted clean revenue)
-  ------------------------------------------------------------------
-  Baseline Wasted Retry Attempts:    198 spam attempts
-  RecoverAI Wasted Actions:          46 single attempts
-  Spam / Wasted Contact Avoided:     152 attempts saved (77% reduction)
-  Safety-First Proactive Stops:      26 high-risk / churn-intent cases
-======================================================================
-```
-
-> **Key Takeaway:** RecoverAI proactively stops 26 high-risk subscriptions from over-contact, protecting merchant brand reputation and avoiding **152 wasted spam attempts** while achieving a **higher per-action recovery rate (37.8% vs. 34.0%)**.
+> **Key Insight:** RecoverAI achieves a **higher per-action recovery rate (37.8% vs. 34.0%)** while proactively stopping 26 high-risk or churn-intent accounts, eliminating **152 unnecessary spam retry attempts** and protecting customer goodwill.
 
 ---
 
@@ -280,5 +270,5 @@ RECOVERAI - AUTONOMOUS SUBSCRIPTION REVENUE RECOVERY BATCH RUN
 
 - **Track**: Track 03 — AI Revenue Recovery
 - **Project**: RecoverAI (Autonomous Subscription Revenue Recovery Agent)
-- **Author**: Atchyuta Pavan Karthikeya | B.Tech CSE (AI & ML), Ramachandra College of Engineering
+- **Author**: Atchyuta Pavan Karthikeya | B.Tech CSE (AI & ML), Ramachandra College of Engineering, Eluru
 - **Core Technology Stack**: Python 3.13, Google Gemini (`gemini-2.0-flash` / `google-genai`), Razorpay Python SDK, SQLite3, Streamlit, Jinja2, Pandas, Altair
