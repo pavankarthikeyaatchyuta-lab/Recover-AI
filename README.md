@@ -6,11 +6,7 @@
 
 ## 📌 Executive Summary
 
-Recurring subscription payments fail for diverse reasons — **insufficient funds**, **expired cards**, **revoked mandates**, **network timeouts**, or **UPI failures**. Most existing payment systems either:
-1. **Retry blindly** (spamming customers with 3 instant retries, burning trust, triggering interchange fees), or
-2. **Give up prematurely** without understanding the customer's context or payment cadence.
-
-**RecoverAI** is an intelligent, context-aware revenue recovery agent built specifically for Indian and global recurring payment ecosystems (Cards, UPI AutoPay, e-Mandates, Netbanking). It diagnoses **why** a payment failed, enriches the transaction with rich customer behavioral signals, applies deterministic safety gates, uses an LLM to formulate tailored recovery strategies, executes actions through Razorpay APIs, and honestly benchmarks its performance against a naive retry baseline.
+RecoverAI is a merchant-side AI decision layer for failed recurring payments. When a subscription payment fails, RecoverAI receives the failure event, enriches it with customer context, applies deterministic safety gates, and uses an LLM to select the most appropriate permitted recovery intervention — retry timing, payment-method recovery, communication, escalation, or deliberate non-action — within merchant-configured policy bounds.
 
 > ℹ️ **Razorpay Integration:** RecoverAI integrates with Razorpay test-mode APIs for supported operations — Payment Links and Orders. Subscription charge retry is handled in the simulation layer. Production recurring-charge execution would require Razorpay Subscriptions API access and verified credentials.
 
