@@ -24,3 +24,7 @@ recoverai.db
 .idea/
 .DS_Store
 Thumbs.db
+
+# Generated reports & run artifacts
+reports/audit_log.csv
+reports/recovery_report.html

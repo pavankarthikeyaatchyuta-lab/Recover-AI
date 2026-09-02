@@ -1,6 +1,16 @@
-# ⚡ RecoverAI — Autonomous Subscription Revenue Recovery Agent
+<div align="center">
 
-> **Razorpay AI Buildathon 2026 — Track 03: AI Revenue Recovery**
+# ⚡ RecoverAI
+### Autonomous Subscription Revenue Recovery Agent
+**Razorpay AI Buildathon 2026 — Track 03: AI Revenue Recovery**
+
+![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)
+![Gemini](https://img.shields.io/badge/LLM-Gemini%202.0%20Flash-orange?logo=google)
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-red?logo=streamlit)
+![Track](https://img.shields.io/badge/Razorpay%20Buildathon-Track%2003-darkblue)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+</div>
 
 ---
 
@@ -61,7 +71,7 @@ Failed Subscription
 
 ## 📊 Comparison: RecoverAI vs. Naive Retry Baseline
 
-| Feature | Naive Retry Baseline | RecoverAI |
+| Feature | Naive Retry | RecoverAI |
 | :--- | :--- | :--- |
 | **Strategy** | Fixed 3x immediate retries for all failures | Context-aware strategy tailored to failure reason |
 | **Payday Awareness** | ❌ None (retries regardless of customer payday) | ✅ Detects salary/payday window and delays retries accordingly |
@@ -84,7 +94,7 @@ recoverai/
 │   └── outcome_model.json        # Base probabilities & tier multipliers
 ├── agent/
 │   ├── stopping_rules.py         # Step 2: 6 Hard deterministic safety gates
-│   ├── decision_agent.py         # Step 3: Gemini/Claude LLM recovery strategy agent
+│   ├── decision_agent.py         # Step 3: Google Gemini LLM recovery strategy agent
 │   ├── policy_gate.py            # Step 4: Merchant policy & discount rule validation
 │   └── executor.py               # Step 5: Test-mode simulation & Razorpay execution
 ├── api/
@@ -101,8 +111,7 @@ recoverai/
 │   ├── dashboard.py              # Step 10: Streamlit interactive control center
 │   └── report.py                 # Step 10: Merchant summary HTML report generator
 ├── reports/
-│   ├── audit_log.csv             # Full event audit export
-│   └── recovery_report.html      # Self-contained merchant HTML report
+│   └── .gitkeep                  # Preserves reports directory structure
 ├── main.py                       # End-to-end batch execution pipeline
 ├── .env.example                  # Environment configuration template
 └── README.md                     # Complete project documentation
@@ -119,6 +128,8 @@ recoverai/
 - **Payday Signal**: Detects `usual_payment_day` correlated with billing date (e.g. 1st–5th for salary cycles).
 - **Outcome Model**: Base recovery probabilities per failure code + action type, multiplied by customer tier weights (e.g. `high_value: 1.15x`, `at_risk: 0.70x`).
 
+---
+
 ### 2. Stopping Rules (`agent/stopping_rules.py`)
 Deterministic safety gates that run **before** the LLM. First rule to fire wins:
 1. `rule_max_attempts`: Stops if `attempt_count >= 3`.
@@ -129,6 +140,8 @@ Deterministic safety gates that run **before** the LLM. First rule to fire wins:
 6. `rule_cooldown`: Holds action if within 24h of a recent failure (`days_since_failure == 0`).
 
 *Benchmark Result on 100 records:* **74 Clear (Proceed to AI) | 9 Proactively Stopped | 17 Escalated to Merchant**.
+
+---
 
 ### 3. AI Decision Agent (`agent/decision_agent.py`)
 - Powered by Google Gemini via the google-genai SDK (`gemini-2.0-flash`).
@@ -142,6 +155,8 @@ Deterministic safety gates that run **before** the LLM. First rule to fire wins:
   - `DO_NOT_ACT`: Intentionally holds action with an auditable justification.
 - Includes automated validation guards and deterministic fallbacks.
 
+---
+
 ### 4. Merchant Policy Gate (`agent/policy_gate.py`)
 - Ensures the AI cannot violate merchant-configured rules.
 - Enforces downgrade eligibility: minimum 6 months tenure, minimum 2 previous failures, maximum 50% discount.
@@ -149,9 +164,13 @@ Deterministic safety gates that run **before** the LLM. First rule to fire wins:
 - Enforces allowed communication channels (`upi`, `card`, `sms`, `whatsapp`, `email`).
 - Forces human review for amounts exceeding merchant thresholds (`₹4,999+`).
 
+---
+
 ### 5. Razorpay Execution & Test Mode (`agent/executor.py` + `api/razorpay_client.py`)
 - Test-mode outcome simulation powered by `outcome_model.json` with deterministic per-subscription MD5 seeding.
 - Live-mode ready: creates test-mode **Razorpay Payment Links**, **Orders**, and **Payment Status Fetches** with paise conversion.
+
+---
 
 ### 6. Finite State Machine & Audit Trail (`core/state.py` + `core/audit.py`)
 - Persisted in SQLite with WAL mode (`recoverai.db` generated at runtime).
@@ -159,10 +178,14 @@ Deterministic safety gates that run **before** the LLM. First rule to fire wins:
 - Rejects illegal transitions with `ValueError`.
 - Logs structured events: `STOPPING_RULE_FIRED`, `DECISION_MADE`, `POLICY_VALIDATED`, `ACTION_EXECUTED`, `OUTCOME_RECORDED`.
 
+---
+
 ### 7. Evaluation & Metrics (`baseline/`, `evaluation/`, `core/metrics.py`)
 - Runs side-by-side counterfactual comparisons against a 3-attempt naive baseline.
 - Tracks granular deltas: `RECOVERAI_WON`, `BASELINE_WON`, `BOTH_RECOVERED`, `BOTH_FAILED`, `RECOVERAI_STOPPED`.
 - Computes top-line recovery rate, revenue recovered, incremental revenue, intervention efficiency, cohort recovery curves (Day 1 / 3 / 7), and breakdowns by failure code and tier.
+
+---
 
 ### 8. User Interface & Reports (`ui/`)
 - **Streamlit Interactive Dashboard (`ui/dashboard.py`)**:
@@ -250,7 +273,7 @@ python -m streamlit run ui/dashboard.py
 
 > 💡 **Note on Evaluation:** RecoverAI deliberately avoids contacting 26 high-risk or churn-intent accounts that the naive baseline blindly retried. On the **74 actionable cases** it touched, RecoverAI outperforms the baseline by **+17.4 percentage points (51.4% vs. 34.0%)** while eliminating **162 wasted spam attempts**.
 
-| Metric | Naive Retry Baseline | RecoverAI Agent |
+| Feature | Naive Retry | RecoverAI |
 | :--- | :---: | :---: |
 | **Subscriptions actioned** | 100 (all, blindly) | **74 (targeted)** |
 | **Recovery rate (actioned only)** | 34.0% | **51.4%** |
@@ -267,7 +290,9 @@ python -m streamlit run ui/dashboard.py
 ## ⚠️ Known Limitations
 
 - **Single recovery cycle per run:** The FSM supports re-entry into DECIDING after a failed action, but main.py currently executes one action per subscription per batch. Multi-day retry loops are an extension point.
+
 - **Simulated outcomes:** Recovery probabilities are estimated benchmarks intended to demonstrate relative agent performance, not empirically validated figures.
+
 - **Evaluation uses deterministic fallback:** The counterfactual benchmark uses RecoverAI's deterministic decision path (_fallback_decision) rather than live LLM calls, ensuring reproducibility. The LLM is used in the live agent loop (main.py) but not in the benchmark comparison.
 
 ---
